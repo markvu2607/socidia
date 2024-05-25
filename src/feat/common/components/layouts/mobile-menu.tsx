@@ -1,8 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React, { useState } from "react";
+
+import { cn } from "@/lib/utils";
 
 type Props = {};
 
@@ -10,7 +11,7 @@ export const MobileMenu = (props: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <div>
+    <div className="md:hidden">
       <div
         className="flex flex-col gap-[4.5px] cursor-pointer"
         onClick={() => setIsOpen((prev) => !prev)}
