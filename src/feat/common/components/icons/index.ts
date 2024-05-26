@@ -5,3 +5,8 @@ export * from "./user-circle-icon";
 export * from "./chat-icon";
 export * from "./bell-icon";
 export * from "./search-icon";
+export * from "./emoji-icon";
+export * from "./photo-icon";
+export * from "./play-icon";
+export * from "./calendar-icon";
+export * from "./poll-icon";
