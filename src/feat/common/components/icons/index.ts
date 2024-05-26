@@ -10,3 +10,7 @@ export * from "./photo-icon";
 export * from "./play-icon";
 export * from "./calendar-icon";
 export * from "./poll-icon";
+export * from "./more-icon";
+export * from "./like-icon";
+export * from "./comment-icon";
+export * from "./share-icon";
