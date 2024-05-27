@@ -6,6 +6,7 @@ import {
   MoreIcon,
   ShareIcon,
 } from "@/feat/common/components/icons";
+import { Comments } from "@/feat/home/components/comments";
 
 type Props = {};
 
@@ -62,6 +63,7 @@ export const Post = (props: Props) => {
           </div>
         </div>
       </div>
+      <Comments />
     </div>
   );
 };
