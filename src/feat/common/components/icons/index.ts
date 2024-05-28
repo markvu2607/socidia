@@ -21,3 +21,7 @@ export * from "./map-pin-icon";
 export * from "./academic-cap-icon";
 export * from "./building-office-icon";
 export * from "./link-icon";
+export * from "./pencil-square-icon";
+export * from "./building-storefront-icon";
+export * from "./presentation-chart-bar-icon";
+export * from "./check-badge-icon";

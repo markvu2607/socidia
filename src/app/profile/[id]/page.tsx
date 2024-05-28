@@ -3,9 +3,10 @@ import { Birthdays } from "@/feat/common/components/birthdays";
 import { FriendRequest } from "@/feat/common/components/friend-request";
 import { RightMenu } from "@/feat/common/components/right-menu";
 import { Feed } from "@/feat/home/components/feed";
-import { LeftMenu } from "@/feat/home/components/left-menu";
+import { LeftMenu } from "@/feat/common/components/left-menu";
 import { UserInformationCard } from "@/feat/profile/components/user-information-card";
 import { UserMediaCard } from "@/feat/profile/components/user-media-card";
+import { SidebarMenu } from "@/feat/common/components/sidebar-menu";
 
 type Props = {};
 
@@ -13,7 +14,10 @@ const ProfilePage = (props: Props) => {
   return (
     <div className="flex gap-6 pt-6">
       <div className="hidden xl:block w-[20%]">
-        <LeftMenu />
+        <LeftMenu>
+          <SidebarMenu />
+          <Ad size="sm" />
+        </LeftMenu>
       </div>
       <div className="w-full lg:w-[70%] xl:w-[50%]">
         <div className="flex flex-col gap-6">
