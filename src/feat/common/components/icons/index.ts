@@ -25,3 +25,4 @@ export * from "./pencil-square-icon";
 export * from "./building-storefront-icon";
 export * from "./presentation-chart-bar-icon";
 export * from "./check-badge-icon";
+export * from "./squares-plus-icon";

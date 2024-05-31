@@ -14,6 +14,7 @@ import {
   HomeIcon,
   PlusCircleIcon,
   SearchIcon,
+  SquaresPlusIcon,
   UserCircleIcon,
 } from "@/feat/common/components/icons";
 import { cn } from "@/lib/utils";
@@ -31,15 +32,15 @@ export const NavBar = (props: Props) => {
       </div>
       <div className="hidden md:flex w-1/2 text-sm items-center justify-between">
         <div className="flex gap-6 text-gray-600">
-          <Link href="/" className="flex gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <HomeIcon className="size-6" />
             <span>Homepage</span>
           </Link>
-          <Link href="/friends" className="flex gap-2">
+          <Link href="/friends" className="flex items-center gap-2">
             <GroupIcon className="size-6" />
             <span>Friends</span>
           </Link>
-          <Link href="/stories" className="flex gap-2">
+          <Link href="/stories" className="flex items-center gap-2">
             <PlusCircleIcon className="size-6" />
             <span>Stories</span>
           </Link>
@@ -67,7 +68,7 @@ export const NavBar = (props: Props) => {
         </ClerkLoading>
         <ClerkLoaded>
           <SignedIn>
-            <GroupIcon className="size-6" />
+            <SquaresPlusIcon className="size-6" />
             <ChatIcon className="size-6" />
             <BellIcon className="size-6" />
             <UserButton />
