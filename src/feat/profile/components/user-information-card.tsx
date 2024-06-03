@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { cn } from "@/lib/utils";
 import {
   AcademicCapIcon,
   BuildingOfficeIcon,
@@ -8,12 +7,57 @@ import {
   LinkIcon,
   MapPinIcon,
 } from "@/feat/common/components/icons";
+import UserInformationActions from "@/feat/profile/components/user-information-actions";
+import prisma from "@/lib/prisma";
+import { cn } from "@/lib/utils";
+import { auth } from "@clerk/nextjs/server";
+import { User } from "@prisma/client";
 
 type Props = {
-  userId: string;
+  user: User;
 };
 
-export const UserInformationCard = (props: Props) => {
+export const UserInformationCard = async ({ user }: Props) => {
+  const createdAtDate = new Date(user.createdAt);
+
+  const formattedDate = createdAtDate.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  let isUserBlocked = false;
+  let isFollowing = false;
+  let isFollowingSent = false;
+
+  const { userId: currentUserId } = auth();
+
+  if (currentUserId) {
+    const blockRes = await prisma.block.findFirst({
+      where: {
+        blockerId: currentUserId,
+        blockedId: user.id,
+      },
+    });
+    blockRes ? (isUserBlocked = true) : (isUserBlocked = false);
+
+    const followRes = await prisma.follower.findFirst({
+      where: {
+        followerId: currentUserId,
+        followingId: user.id,
+      },
+    });
+    followRes ? (isFollowing = true) : (isFollowing = false);
+
+    const followReqRes = await prisma.followRequest.findFirst({
+      where: {
+        senderId: currentUserId,
+        receiverId: user.id,
+      },
+    });
+    followReqRes ? (isFollowingSent = true) : (isFollowingSent = false);
+  }
+
   return (
     <div
       className={cn(
@@ -29,54 +73,63 @@ export const UserInformationCard = (props: Props) => {
       </div>
       <div className="flex flex-col gap-4 text-gray-500">
         <div className="flex items-center gap-2">
-          <span className="text-xl text-black">Mark</span>
-          <span className="text-sm">@markvu2607</span>
-        </div>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Debitis,
-          voluptas quod ducimus molestiae eaque modi veniam nihil soluta, odit
-          nesciunt velit voluptatum alias autem numquam cupiditate vero dolore!
-          Eum, est?
-        </p>
-        <div className="flex items-center gap-2">
-          <MapPinIcon className="size-6" />
-          <span>
-            Living in <b>Vietnam</b>
+          <span className="text-xl text-black">
+            {user.name && user.surname
+              ? `${user.name} ${user.surname}`
+              : user.username}
           </span>
+          <span className="text-sm">@{user.username}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <AcademicCapIcon className="size-6" />
-          <span>
-            Went to <b>TLU</b>
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <BuildingOfficeIcon className="size-6" />
-          <span>
-            Working at <b>Test</b>
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex gap-1 items-center">
-            <LinkIcon className="size-6" />
-            <Link
-              href="https://markvu.tech"
-              className="text-blue-500 font-medium"
-            >
-              markvu.tech
-            </Link>
+        {user.description && <p>{user.description}</p>}
+        {user.city && (
+          <div className="flex items-center gap-2">
+            <MapPinIcon className="size-6" />
+            <span>
+              Living in <b>{user.city}</b>
+            </span>
           </div>
+        )}
+        {user.school && (
+          <div className="flex items-center gap-2">
+            <AcademicCapIcon className="size-6" />
+            <span>
+              Went to <b>{user.school}</b>
+            </span>
+          </div>
+        )}
+        {user.work && (
+          <div className="flex items-center gap-2">
+            <BuildingOfficeIcon className="size-6" />
+            <span>
+              Working at <b>{user.work}</b>
+            </span>
+          </div>
+        )}
+        <div className="flex items-center justify-between">
+          {user.website && (
+            <div className="flex gap-1 items-center">
+              <LinkIcon className="size-6" />
+              <Link
+                href={user.website}
+                className="text-blue-500 font-medium"
+                target="_blank"
+              >
+                {user.website}
+              </Link>
+            </div>
+          )}
           <div className="flex gap-1 items-center">
             <CalendarIcon className="size-6" />
-            <span>Joined Jan 2025</span>
+            <span>Joined {formattedDate}</span>
           </div>
         </div>
-        <button className="bg-blue-500 text-white text-sm rounded-md p-2">
-          Follow
-        </button>
-        <span className="text-red-400 self-end text-xs cursor-pointer">
-          Block User
-        </span>
+        <UserInformationActions
+          userId={user.id}
+          currentUserId={currentUserId}
+          isUserBlocked={isUserBlocked}
+          isFollowing={isFollowing}
+          isFollowingSent={isFollowingSent}
+        />
       </div>
     </div>
   );

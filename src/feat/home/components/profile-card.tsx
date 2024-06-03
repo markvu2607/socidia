@@ -2,10 +2,31 @@ import Image from "next/image";
 
 import { CheckBadgeIcon } from "@/feat/common/components/icons";
 import { cn } from "@/lib/utils";
+import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 type Props = {};
 
-export const ProfileCard = (props: Props) => {
+export const ProfileCard = async (props: Props) => {
+  const { userId } = auth();
+
+  if (!userId) return null;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+    },
+    include: {
+      _count: {
+        select: {
+          followers: true,
+        },
+      },
+    },
+  });
+
+  if (!user) return null;
+
   return (
     <div
       className={cn(
@@ -15,13 +36,13 @@ export const ProfileCard = (props: Props) => {
     >
       <div className="h-20 relative">
         <Image
-          src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
+          src={user.cover || "/noCover.png"}
           alt=""
           fill
           className="rounded-md"
         />
         <Image
-          src="https://images.unsplash.com/photo-1724232547374-69758574fff5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw1fHx8ZW58MHx8fHx8"
+          src={user.avatar || "/default-avatar.jpg"}
           alt=""
           width={48}
           height={48}
@@ -29,11 +50,15 @@ export const ProfileCard = (props: Props) => {
         />
       </div>
       <div className="flex flex-col gap-2 items-center">
-        <span className="font-semibold">Mark</span>
+        <span className="font-semibold">
+          {user.name && user.surname
+            ? `${user.name} ${user.surname}`
+            : user.username}
+        </span>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <CheckBadgeIcon className="size-6" />
-            <span>500 followers</span>
+            <span>{user._count.followers} followers</span>
           </div>
         </div>
         <button className="bg-blue-500 text-white text-xs p-2 rounded-md">

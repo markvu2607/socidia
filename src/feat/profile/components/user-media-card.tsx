@@ -2,12 +2,13 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { User } from "@prisma/client";
 
 type Props = {
-  userId: string;
+  user: User;
 };
 
-export const UserMediaCard = (props: Props) => {
+export const UserMediaCard = ({ user }: Props) => {
   return (
     <div
       className={cn(
