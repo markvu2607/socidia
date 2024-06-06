@@ -6,14 +6,12 @@ import { switchBlock, switchFollow } from "@/feat/profile/actions";
 
 type Props = {
   userId: string;
-  currentUserId: string | null;
   isUserBlocked: boolean;
   isFollowing: boolean;
   isFollowingSent: boolean;
 };
 
 const UserInformationActions = ({
-  currentUserId,
   isFollowing,
   isFollowingSent,
   isUserBlocked,

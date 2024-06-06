@@ -1,3 +1,5 @@
+import { auth } from "@clerk/nextjs/server";
+import { User } from "@prisma/client";
 import Link from "next/link";
 
 import {
@@ -7,11 +9,10 @@ import {
   LinkIcon,
   MapPinIcon,
 } from "@/feat/common/components/icons";
+import { UpdateUser } from "@/feat/profile/components/update-user";
 import UserInformationActions from "@/feat/profile/components/user-information-actions";
 import prisma from "@/lib/prisma";
 import { cn } from "@/lib/utils";
-import { auth } from "@clerk/nextjs/server";
-import { User } from "@prisma/client";
 
 type Props = {
   user: User;
@@ -67,9 +68,13 @@ export const UserInformationCard = async ({ user }: Props) => {
     >
       <div className="flex justify-between items-center font-medium">
         <span className="text-gray-500">User Information</span>
-        <Link href="/" className="text-blue-500 text-xs">
-          See all
-        </Link>
+        {currentUserId !== user.id ? (
+          <UpdateUser />
+        ) : (
+          <Link href="/" className="text-blue-500 text-xs">
+            See all
+          </Link>
+        )}
       </div>
       <div className="flex flex-col gap-4 text-gray-500">
         <div className="flex items-center gap-2">
@@ -123,13 +128,14 @@ export const UserInformationCard = async ({ user }: Props) => {
             <span>Joined {formattedDate}</span>
           </div>
         </div>
-        <UserInformationActions
-          userId={user.id}
-          currentUserId={currentUserId}
-          isUserBlocked={isUserBlocked}
-          isFollowing={isFollowing}
-          isFollowingSent={isFollowingSent}
-        />
+        {currentUserId && currentUserId != user.id && (
+          <UserInformationActions
+            userId={user.id}
+            isUserBlocked={isUserBlocked}
+            isFollowing={isFollowing}
+            isFollowingSent={isFollowingSent}
+          />
+        )}
       </div>
     </div>
   );

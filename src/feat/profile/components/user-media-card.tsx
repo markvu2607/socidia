@@ -1,14 +1,26 @@
+import { User } from "@prisma/client";
+import Image from "next/image";
 import Link from "next/link";
 
+import prisma from "@/lib/prisma";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import { User } from "@prisma/client";
 
 type Props = {
   user: User;
 };
 
-export const UserMediaCard = ({ user }: Props) => {
+export const UserMediaCard = async ({ user }: Props) => {
+  const postsWithMedia = await prisma.post.findMany({
+    where: {
+      userId: user.id,
+      img: {
+        not: null,
+      },
+    },
+    take: 8,
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <div
       className={cn(
@@ -23,78 +35,18 @@ export const UserMediaCard = ({ user }: Props) => {
         </Link>
       </div>
       <div className="flex gap-4 justify-between flex-wrap">
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
-        <div className="relative w-1/5 h-20">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            fill
-            className="rounded-md object-cover"
-          />
-        </div>
+        {postsWithMedia.length
+          ? postsWithMedia.map((post) => (
+              <div key={post.id} className="relative w-1/5 h-20">
+                <Image
+                  src={post.img!}
+                  alt=""
+                  fill
+                  className="rounded-md object-cover"
+                />
+              </div>
+            ))
+          : "No media found!"}
       </div>
     </div>
   );
