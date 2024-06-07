@@ -1,12 +1,28 @@
-import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 
+import { FriendRequestList } from "@/feat/common/components/friend-request-list";
+import prisma from "@/lib/prisma";
 import { cn } from "@/lib/utils";
-import { CheckCircleIcon, XCircleIcon } from "@/feat/common/components/icons";
 
 type Props = {};
 
-export const FriendRequest = (props: Props) => {
+export const FriendRequest = async (props: Props) => {
+  const { userId } = auth();
+
+  if (!userId) return null;
+
+  const requests = await prisma.followRequest.findMany({
+    where: {
+      receiverId: userId,
+    },
+    include: {
+      sender: true,
+    },
+  });
+
+  if (requests.length === 0) return null;
+
   return (
     <div
       className={cn(
@@ -20,22 +36,7 @@ export const FriendRequest = (props: Props) => {
           See all
         </Link>
       </div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Image
-            src="https://plus.unsplash.com/premium_photo-1669842336826-28b52708792a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8"
-            alt=""
-            width={40}
-            height={40}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <span className="font-semibold">Mark</span>
-        </div>
-        <div className="flex gap-3 justify-end">
-          <CheckCircleIcon className="size-4" />
-          <XCircleIcon className="size-4" />
-        </div>
-      </div>
+      <FriendRequestList requests={requests} />
     </div>
   );
 };
