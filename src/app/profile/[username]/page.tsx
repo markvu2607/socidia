@@ -1,5 +1,7 @@
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { Ad } from "@/feat/common/components/ad";
 import { Birthdays } from "@/feat/common/components/birthdays";
@@ -11,8 +13,6 @@ import { Feed } from "@/feat/home/components/feed";
 import { UserInformationCard } from "@/feat/profile/components/user-information-card";
 import { UserMediaCard } from "@/feat/profile/components/user-media-card";
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
-import { Suspense } from "react";
 
 type Props = {
   params: {
@@ -98,7 +98,7 @@ const ProfilePage = async ({ params }: Props) => {
               </div>
             </div>
           </div>
-          <Feed />
+          <Feed username={user.username} />
         </div>
       </div>
       <div className="hidden lg:block w-[30%]">
