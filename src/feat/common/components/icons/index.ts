@@ -12,6 +12,7 @@ export * from "./calendar-icon";
 export * from "./poll-icon";
 export * from "./more-icon";
 export * from "./like-icon";
+export * from "./liked-icon";
 export * from "./comment-icon";
 export * from "./share-icon";
 export * from "./check-circle-icon";

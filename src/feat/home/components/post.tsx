@@ -1,13 +1,9 @@
-import Image from "next/image";
 import { Post as TPost, User } from "@prisma/client";
+import Image from "next/image";
 
-import {
-  CommentIcon,
-  LikeIcon,
-  MoreIcon,
-  ShareIcon,
-} from "@/feat/common/components/icons";
+import { MoreIcon } from "@/feat/common/components/icons";
 import { Comments } from "@/feat/home/components/comments";
+import { PostActions } from "@/feat/home/components/post-actions";
 
 type Props = {
   post: TPost & { user: User } & {
@@ -50,27 +46,11 @@ export const Post = ({ post }: Props) => {
         )}
         <p>{post.desc}</p>
       </div>
-      <div className="flex items-center justify-between text-sm">
-        <div className="flex gap-8">
-          <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full">
-            <LikeIcon className="size-4" />
-            <span className="text-gray-300">|</span>
-            <span className="text-gray-500">123</span>
-          </div>
-          <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full">
-            <CommentIcon className="size-4" />
-            <span className="text-gray-300">|</span>
-            <span className="text-gray-500">456</span>
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full">
-            <ShareIcon className="size-4" />
-            <span className="text-gray-300">|</span>
-            <span className="text-gray-500">Share</span>
-          </div>
-        </div>
-      </div>
+      <PostActions
+        postId={post.id}
+        likes={post.likes.map((like) => like.userId)}
+        commentNumber={post._count.comments}
+      />
       <Comments />
     </div>
   );
