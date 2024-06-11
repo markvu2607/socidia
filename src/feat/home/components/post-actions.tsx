@@ -64,7 +64,7 @@ export const PostActions = ({ postId, likes, commentNumber }: Props) => {
         <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full">
           <CommentIcon className="size-4" />
           <span className="text-gray-300">|</span>
-          <span className="text-gray-500">456</span>
+          <span className="text-gray-500">{commentNumber}</span>
         </div>
       </div>
       <div>
