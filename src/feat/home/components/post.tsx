@@ -4,6 +4,9 @@ import Image from "next/image";
 import { MoreIcon } from "@/feat/common/components/icons";
 import { Comments } from "@/feat/home/components/comments";
 import { PostActions } from "@/feat/home/components/post-actions";
+import { Suspense } from "react";
+import { PostInfo } from "@/feat/home/components/post-info";
+import { auth } from "@clerk/nextjs/server";
 
 type Props = {
   post: TPost & { user: User } & {
@@ -14,6 +17,8 @@ type Props = {
 };
 
 export const Post = ({ post }: Props) => {
+  const { userId } = auth();
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -31,7 +36,7 @@ export const Post = ({ post }: Props) => {
               : post.user.username}
           </span>
         </div>
-        <MoreIcon className="size-6" />
+        {userId === post.user.id && <PostInfo postId={post.id} />}
       </div>
       <div className="flex flex-col gap-4">
         {post.img && (
@@ -46,12 +51,16 @@ export const Post = ({ post }: Props) => {
         )}
         <p>{post.desc}</p>
       </div>
-      <PostActions
-        postId={post.id}
-        likes={post.likes.map((like) => like.userId)}
-        commentNumber={post._count.comments}
-      />
-      <Comments postId={post.id} />
+      <Suspense fallback="Loading...">
+        <PostActions
+          postId={post.id}
+          likes={post.likes.map((like) => like.userId)}
+          commentNumber={post._count.comments}
+        />
+      </Suspense>
+      <Suspense fallback="Loading...">
+        <Comments postId={post.id} />
+      </Suspense>
     </div>
   );
 };
